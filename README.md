@@ -1,4 +1,4 @@
-# Syntax Parser
+# Syntax Analyzer
 
 **《编译原理》课程设计，基于 LR (1) 分析的类 C 语言语法分析器**（本项目配套的 [词法分析器](https://github.com/LIU42/LexicalAnalyzer)）
 
