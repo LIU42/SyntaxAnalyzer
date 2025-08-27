@@ -95,11 +95,9 @@ configs 目录下的 message.json 文件为本项目的错误信息配置文件�
 
 由于文法产生式数量较多，构建 ACTION 表和 GOTO 表为一项耗时操作。运行 tables.py 文件即可根据配置的文法生成 ACTION 表和 GOTO 表并存储。
 
-- 
-  
-  ```shell-session
-  python tables.py
-  ```
+```shell-session
+python tables.py
+```
 
 生成的 ACTION 表和 GOTO 表位于 builds 目录下，执行生成任务前若该目录不存在请先创建，其中 actions.txt 文件为 ACTION 表内容，gotos.txt 文件为 GOTO 表内容。生成报告同样位于 builds 目录下，其中 items.txt 文件为生成的项目集，conflicts.txt 文件为生成过程中的表项冲突。
 
