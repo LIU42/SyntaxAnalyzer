@@ -1,10 +1,10 @@
-# Syntax Analyzer
+# SyntaxAnalyzer 语法分析器
 
-**《编译原理》课程设计，基于 LR (1) 分析的类 C 语言语法分析器**（本项目配套的 [词法分析器](https://github.com/LIU42/LexicalAnalyzer)）
+*<u>v1.1.0 新变化：优化项目结构，同步上传语法分析器以及配套的 [词法分析器](https://github.com/LIU42/LexicalAnalyzer) 。</u>*
 
 ## 项目简介
 
-本项目为基于 LR (1) 分析的类 C 语言语法分析器，可以实现针对一种类似 C 语言程序的 Token 序列（由 [词法分析器](https://github.com/LIU42/LexicalAnalyzer) 生成）进行语法分析，给出合法判断、出错位置及大致原因。
+本项目为《编译原理》课程设计，基于 LR (1) 的类 C 语言语法分析器，可以实现针对一种类似 C 语言程序的 Token 序列（由 [词法分析器](https://github.com/LIU42/LexicalAnalyzer) 生成）进行语法分析，给出合法判断、出错位置及大致原因。
 
 本项目提供的默认文法支持除了：
 
@@ -22,11 +22,11 @@
 
 整个项目的工作流程如下：
 
-1. 首先读入文法配置文件（<u>configs/grammar.json</u>）中描述语法规则的带有拓广产生式的 2 型文法，并根据该文法利用项目集规范族法构造识别活前缀的有穷自动机（状态转换表）。
+1. 首先读入文法配置文件（configs/grammar.json）中描述语法规则的带有拓广产生式的 2 型文法，并根据该文法利用项目集规范族法构造识别活前缀的有穷自动机（状态转换表）。
 
 2. 其次根据状态转换表，判断项目类型，逐一添加 ACTION 表项和 GOTO 表项，分别构造 ACTION 表和 GOTO 表。
 
-3. 最后根据 ACTION 表和 GOTO 表，以及错误信息配置文件（<u>configs/message.json</u>）利用 LR (1) 分析流程，对输入的 Token 序列进行语法分析和错误处理。
+3. 最后根据 ACTION 表和 GOTO 表，以及错误信息配置文件（configs/message.json）利用 LR (1) 分析流程，对输入的 Token 序列进行语法分析和错误处理。
 
 当检测到语法错误时，采用恐慌模式（Panic）错误恢复策略，即不断丢弃下一个 Token，直到找到一个能够进行正常分析的 Token 继续分析。
 
@@ -67,15 +67,14 @@ configs 目录下的 grammar.json 文件为本项目的文法配置文件，本�
 
 ```json5
 {
-    "formulas": [
-        /*
-         * 语法规则文法产生式列表，要求 II 型文法
-         * 编写规则形如："[SelectionStatement] -> <keywords,if> <bounds,(> [Expression] <bounds,)> [Statement]"
-         * 非终结符以[]包裹，名称可自定义
-         * 终结符按照 Token 的表示规则：<所属类型,内容>
-         * 不同的符号间以空格分隔
-         */
-    ]
+  "formulas": [
+    /*
+     * 语法规则文法产生式列表，要求 II 型文法
+     * 非终结符以[]包裹，名称可自定义
+     * 终结符按照 Token 的表示规则：<所属类型,内容>
+     * 不同的符号间以空格分隔
+     */
+  ]
 }
 ```
 
@@ -83,21 +82,40 @@ configs 目录下的 message.json 文件为本项目的错误信息配置文件�
 
 ```json5
 {
-    "messages": [
-        {
-            "token": /* 出错的 Token，表示规则为 <所属类型,内容> */,
-            "message": /* 对应的出错原因描述 */
-        }
-        // 类似地可添加多个规则
-    ],
-    "defaults": // 默认的出错原因描述，在没有成功匹配时调用
+  "messages": [
+    {
+      "token": /* 出错的 Token，表示规则为 <所属类型,内容> */,
+      "message": /* 对应的出错原因描述 */
+    }
+    // 类似地可添加多个规则
+  ],
+  "defaults": // 默认的出错原因描述，在没有成功匹配时调用
 }
 ```
 
-本项目不依赖任何第三方库，由于文法产生式数量较多，构建 ACTION 表和 GOTO 表为一项耗时操作。运行 <u>tables.py</u> 文件即可根据配置的文法生成 ACTION 表和 GOTO 表并存储：
+由于文法产生式数量较多，构建 ACTION 表和 GOTO 表为一项耗时操作。运行 tables.py 文件即可根据配置的文法生成 ACTION 表和 GOTO 表并存储。
 
-- 生成的 ACTION 表和 GOTO 表位于 <u>builds/</u> 目录下，执行生成任务前若该目录不存在请先创建，其中 actions.txt 文件为 ACTION 表内容，gotos.txt 文件为 GOTO 表内容。
+- 
 
-- 生成报告同样位于 <u>builds/</u> 目录下，其中 items.txt 文件为生成的项目集，conflicts.txt 文件为生成过程中的表项冲突。
+```shell-session
+python tables.py
+```
 
-运行主程序 main.py 即可进行语法分析。本项目提供了一些测试用例，也可根据需要调整输入和输出文件路径。
+生成的 ACTION 表和 GOTO 表位于 builds 目录下，执行生成任务前若该目录不存在请先创建，其中 actions.txt 文件为 ACTION 表内容，gotos.txt 文件为 GOTO 表内容。生成报告同样位于 builds 目录下，其中 items.txt 文件为生成的项目集，conflicts.txt 文件为生成过程中的表项冲突。
+
+运行主程序 main.py 即可进行语法分析，其命令行参数的含义如下，其中输入图像文件路图像文件路径数量保持一致。
+
+| 参数名       | 简化参数名 | 参数描述                     |
+| --------- | ----- | ------------------------ |
+| --sources | -s    | 输入分析文件路径序列，不同的文件路径以空格分隔。 |
+| --outputs | -o    | 输出结果文件路径序列，不同的文件路径以空格分隔。 |
+
+下面是一个运行示例。
+
+```shell-session
+python main.py --sources "s1.txt" "s2.txt" --outputs "o1.txt" "o2.txt"
+```
+
+本项目提供了一些测试用例，也可根据需要调整输入和输出文件路径。
+
+
